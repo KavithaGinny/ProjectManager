@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 09/26/2019 20:36:03
--- Generated from EDMX file: c:\users\admin\documents\visual studio 2017\Projects\ProjectManagerSPA\ProjectManagerSPA\Models\ProjectManagerModel1.edmx
+-- Date Created: 09/27/2019 13:04:53
+-- Generated from EDMX file: C:\Users\Admin\documents\visual studio 2017\Projects\ProjectManagerSPA\ProjectManagerSPA\Models\ProjectManagerModel1.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -17,11 +17,38 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_UserProject]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Projects] DROP CONSTRAINT [FK_UserProject];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UserTask]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Tasks] DROP CONSTRAINT [FK_UserTask];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ProjectTask]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Tasks] DROP CONSTRAINT [FK_ProjectTask];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ParentTaskTask]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Tasks] DROP CONSTRAINT [FK_ParentTaskTask];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ProjectParentTask]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ParentTasks] DROP CONSTRAINT [FK_ProjectParentTask];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[Users]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Users];
+GO
+IF OBJECT_ID(N'[dbo].[Projects]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Projects];
+GO
+IF OBJECT_ID(N'[dbo].[Tasks]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Tasks];
+GO
+IF OBJECT_ID(N'[dbo].[ParentTasks]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[ParentTasks];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -33,8 +60,8 @@ CREATE TABLE [dbo].[Users] (
     [FirstName] nvarchar(max)  NOT NULL,
     [LastName] nvarchar(max)  NOT NULL,
     [EmployeeID] nvarchar(max)  NOT NULL,
-    [ProjectID] nvarchar(max)  NOT NULL,
-    [TaskID] nvarchar(max)  NOT NULL
+    [ProjectID] nvarchar(max)  NULL,
+    [TaskID] nvarchar(max)  NULL
 );
 GO
 

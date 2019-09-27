@@ -70,7 +70,7 @@ namespace ProjectManagerSPA.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Content(HttpStatusCode.Accepted,user);
         }
 
         // POST: api/Users

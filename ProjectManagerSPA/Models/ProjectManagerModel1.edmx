@@ -39,8 +39,8 @@
     <Property Name="FirstName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="LastName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="EmployeeID" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="ProjectID" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="TaskID" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ProjectID" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="TaskID" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
   <EntityType Name="Projects">
     <Key>
@@ -175,8 +175,8 @@
           <Property Name="FirstName" Type="String" Nullable="false" />
           <Property Name="LastName" Type="String" Nullable="false" />
           <Property Name="EmployeeID" Type="String" Nullable="false" />
-          <Property Name="ProjectID" Type="String" Nullable="false" />
-          <Property Name="TaskID" Type="String" Nullable="false" />
+          <Property Name="ProjectID" Type="String" />
+          <Property Name="TaskID" Type="String" />
           <NavigationProperty Name="Projects" Relationship="ProjectManagerModel1.UserProject" FromRole="User" ToRole="Project" />
           <NavigationProperty Name="Tasks" Relationship="ProjectManagerModel1.UserTask" FromRole="User" ToRole="Task" />
         </EntityType>
