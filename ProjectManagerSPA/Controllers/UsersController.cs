@@ -14,53 +14,80 @@ namespace ProjectManagerSPA.Controllers
 {
     public class UsersController : ApiController
     {
-        private ProjectManagerModel1Container db = new ProjectManagerModel1Container();
-
-        // GET: api/Users
-        public IQueryable<User> GetUsers()
+        public UserCrud UserDetailsGetter { get; set; }
+        public UserController()
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            return db.Users;
+            UserDetailsGetter = new UserCrud();
         }
-
-        // GET: api/Users/5
-        [ResponseType(typeof(User))]
-        public IHttpActionResult GetUser(int id)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<User> Get()
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            User user = db.Users.Find(id);
-            if (user == null)
+            return UserDetailsGetter.GetAllUser();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [ResponseType(typeof(User))]
+        public IHttpActionResult Get(int UserId)
+        {
+
+            User i = UserDetailsGetter.GetUser(UserId);
+            if (i != null)
+            {
+                return Ok(i);
+            }
+            else
             {
                 return NotFound();
             }
 
-            return Ok(user);
         }
-
-        // PUT: api/Users/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutUser(int id, User user)
+        public IHttpActionResult Post(User t)
         {
-            db.Configuration.ProxyCreationEnabled = false;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            UserDetailsGetter.AddUser(t);
+            return CreatedAtRoute("DefaultApi", new { id = t.UserId }, t);
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult Put(int UserId, User User)
+        {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.UserID)
+            if (UserId != User.UserId)
             {
                 return BadRequest();
             }
-
-            db.Entry(user).State = EntityState.Modified;
-
             try
             {
-                db.SaveChanges();
+                UserDetailsGetter.UpdateUser(User);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserDetailsGetter.IsUserExist(UserId))
                 {
                     return NotFound();
                 }
@@ -69,56 +96,24 @@ namespace ProjectManagerSPA.Controllers
                     throw;
                 }
             }
+            return StatusCode(HttpStatusCode.NoContent);
 
-            return Content(HttpStatusCode.Accepted,user);
         }
-
-        // POST: api/Users
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
         [ResponseType(typeof(User))]
-        public IHttpActionResult PostUser(User user)
+        public IHttpActionResult Delete(int UserId)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            db.Users.Add(user);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = user.UserID }, user);
-        }
-
-        // DELETE: api/Users/5
-        [ResponseType(typeof(User))]
-        public IHttpActionResult DeleteUser(int id)
-        {
-            db.Configuration.ProxyCreationEnabled = false;
-            User user = db.Users.Find(id);
-            if (user == null)
+            User User = UserDetailsGetter.GetUser(UserId);
+            if (User == null)
             {
                 return NotFound();
             }
-
-            db.Users.Remove(user);
-            db.SaveChanges();
-
-            return Ok(user);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool UserExists(int id)
-        {
-            db.Configuration.ProxyCreationEnabled = false;
-            return db.Users.Count(e => e.UserID == id) > 0;
+            UserDetailsGetter.RemoveUser(UserId);
+            return Ok(User);
         }
     }
 }
