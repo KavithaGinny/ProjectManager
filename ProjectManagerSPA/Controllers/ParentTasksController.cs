@@ -9,9 +9,11 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ProjectManagerSPA.Models;
+using System.Web.Http.Cors;
 
 namespace ProjectManagerSPA.Controllers
 {
+    [EnableCors(origins: "http://localhost:4200/", headers: "*", methods: "*")]
     public class ParentTasksController : ApiController
     {
         private ProjectManagerModel1Container db = new ProjectManagerModel1Container();

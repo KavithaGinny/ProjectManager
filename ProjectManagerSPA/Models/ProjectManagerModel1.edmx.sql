@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 09/27/2019 13:04:53
--- Generated from EDMX file: C:\Users\Admin\documents\visual studio 2017\Projects\ProjectManagerSPA\ProjectManagerSPA\Models\ProjectManagerModel1.edmx
+-- Date Created: 09/28/2019 23:50:26
+-- Generated from EDMX file: C:\Users\Admin\Documents\Visual Studio 2017\Projects\ProjectManagerSPA\ProjectManagerSPA\Models\ProjectManagerModel1.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -72,7 +72,7 @@ CREATE TABLE [dbo].[Projects] (
     [StartDate] nvarchar(max)  NOT NULL,
     [EndDate] nvarchar(max)  NOT NULL,
     [Priority] nvarchar(max)  NOT NULL,
-    [User_UserID] int  NOT NULL
+    [ManagerUserId] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -86,17 +86,14 @@ CREATE TABLE [dbo].[Tasks] (
     [EndDate] nvarchar(max)  NOT NULL,
     [Priority] nvarchar(max)  NOT NULL,
     [Status] nvarchar(max)  NOT NULL,
-    [User_UserID] int  NOT NULL,
-    [Project_ProjectID] int  NOT NULL,
-    [ParentTask_ParentID] int  NOT NULL
+    [UserID] nvarchar(max)  NOT NULL
 );
 GO
 
 -- Creating table 'ParentTasks'
 CREATE TABLE [dbo].[ParentTasks] (
     [ParentID] int IDENTITY(1,1) NOT NULL,
-    [ParentTaskName] nvarchar(max)  NOT NULL,
-    [Project_ProjectID] int  NOT NULL
+    [ParentTaskName] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -131,81 +128,6 @@ GO
 -- --------------------------------------------------
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
-
--- Creating foreign key on [User_UserID] in table 'Projects'
-ALTER TABLE [dbo].[Projects]
-ADD CONSTRAINT [FK_UserProject]
-    FOREIGN KEY ([User_UserID])
-    REFERENCES [dbo].[Users]
-        ([UserID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_UserProject'
-CREATE INDEX [IX_FK_UserProject]
-ON [dbo].[Projects]
-    ([User_UserID]);
-GO
-
--- Creating foreign key on [User_UserID] in table 'Tasks'
-ALTER TABLE [dbo].[Tasks]
-ADD CONSTRAINT [FK_UserTask]
-    FOREIGN KEY ([User_UserID])
-    REFERENCES [dbo].[Users]
-        ([UserID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_UserTask'
-CREATE INDEX [IX_FK_UserTask]
-ON [dbo].[Tasks]
-    ([User_UserID]);
-GO
-
--- Creating foreign key on [Project_ProjectID] in table 'Tasks'
-ALTER TABLE [dbo].[Tasks]
-ADD CONSTRAINT [FK_ProjectTask]
-    FOREIGN KEY ([Project_ProjectID])
-    REFERENCES [dbo].[Projects]
-        ([ProjectID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ProjectTask'
-CREATE INDEX [IX_FK_ProjectTask]
-ON [dbo].[Tasks]
-    ([Project_ProjectID]);
-GO
-
--- Creating foreign key on [ParentTask_ParentID] in table 'Tasks'
-ALTER TABLE [dbo].[Tasks]
-ADD CONSTRAINT [FK_ParentTaskTask]
-    FOREIGN KEY ([ParentTask_ParentID])
-    REFERENCES [dbo].[ParentTasks]
-        ([ParentID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ParentTaskTask'
-CREATE INDEX [IX_FK_ParentTaskTask]
-ON [dbo].[Tasks]
-    ([ParentTask_ParentID]);
-GO
-
--- Creating foreign key on [Project_ProjectID] in table 'ParentTasks'
-ALTER TABLE [dbo].[ParentTasks]
-ADD CONSTRAINT [FK_ProjectParentTask]
-    FOREIGN KEY ([Project_ProjectID])
-    REFERENCES [dbo].[Projects]
-        ([ProjectID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ProjectParentTask'
-CREATE INDEX [IX_FK_ProjectParentTask]
-ON [dbo].[ParentTasks]
-    ([Project_ProjectID]);
-GO
 
 -- --------------------------------------------------
 -- Script has ended

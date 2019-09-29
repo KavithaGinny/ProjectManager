@@ -22,9 +22,6 @@ namespace ProjectManagerSPA.Models
         public string EndDate { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
-    
-        public virtual User User { get; set; }
-        public virtual Project Project { get; set; }
-        public virtual ParentTask ParentTask { get; set; }
+        public string UserID { get; set; }
     }
 }

@@ -9,85 +9,61 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ProjectManagerSPA.Models;
+using System.Web.Http.Cors;
 
 namespace ProjectManagerSPA.Controllers
 {
+    [EnableCors(origins: "http://localhost:4200/", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
-        public UserCrud UserDetailsGetter { get; set; }
-        public UserController()
+        private ProjectManagerModel1Container db = new ProjectManagerModel1Container();
+
+        // GET: api/Users
+        public IQueryable<User> GetUsers()
         {
-            UserDetailsGetter = new UserCrud();
+            db.Configuration.ProxyCreationEnabled = false;
+            return db.Users;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<User> Get()
-        {
-            return UserDetailsGetter.GetAllUser();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="UserId"></param>
-        /// <returns></returns>
+
+        // GET: api/Users/5
         [HttpGet]
         [ResponseType(typeof(User))]
-        public IHttpActionResult Get(int UserId)
+        public IHttpActionResult GetUser(int id)
         {
-
-            User i = UserDetailsGetter.GetUser(UserId);
-            if (i != null)
-            {
-                return Ok(i);
-            }
-            else
+            db.Configuration.ProxyCreationEnabled = false;
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
+            return Ok(user);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
-        [ResponseType(typeof(void))]
-        public IHttpActionResult Post(User t)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            UserDetailsGetter.AddUser(t);
-            return CreatedAtRoute("DefaultApi", new { id = t.UserId }, t);
 
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
+        // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult Put(int UserId, User User)
+        public IHttpActionResult PutUser(int id, User user)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (UserId != User.UserId)
+            if (id != user.UserID)
             {
                 return BadRequest();
             }
+
+            db.Entry(user).State = EntityState.Modified;
+
             try
             {
-                UserDetailsGetter.UpdateUser(User);
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserDetailsGetter.IsUserExist(UserId))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -96,24 +72,57 @@ namespace ProjectManagerSPA.Controllers
                     throw;
                 }
             }
-            return StatusCode(HttpStatusCode.NoContent);
 
+            return Content(HttpStatusCode.Accepted,user);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="UserId"></param>
-        /// <returns></returns>
+
+        // POST: api/Users
         [ResponseType(typeof(User))]
-        public IHttpActionResult Delete(int UserId)
+        public IHttpActionResult PostUser(User user)
         {
-            User User = UserDetailsGetter.GetUser(UserId);
-            if (User == null)
+            db.Configuration.ProxyCreationEnabled = false;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.Users.Add(user);
+            db.SaveChanges();
+
+            return CreatedAtRoute("DefaultApi", new { id = user.UserID }, user);
+        }
+
+        // DELETE: api/Users/5
+        [HttpDelete]
+        [ResponseType(typeof(User))]
+        public IHttpActionResult DeleteUser(int id)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return NotFound();
             }
-            UserDetailsGetter.RemoveUser(UserId);
-            return Ok(User);
+
+            db.Users.Remove(user);
+            db.SaveChanges();
+
+            return Ok(user);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private bool UserExists(int id)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            return db.Users.Count(e => e.UserID == id) > 0;
         }
     }
 }
